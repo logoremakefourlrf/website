@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>New Tab — LogoRemakeFour</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 48px 20px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(59, 130, 246, .18), transparent 42%),
+        #111827;
+    }
+
+    main { width: min(100%, 720px); }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+
+    .brand img {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      letter-spacing: -.04em;
+    }
+
+    .subtitle {
+      margin: 5px 0 0;
+      color: #9ca3af;
+      font-size: .95rem;
+    }
+
+    .search-wrap { position: relative; }
+
+    .search-form {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 16px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .22);
+    }
+
+    select, input, button {
+      font: inherit;
+    }
+
+    select {
+      width: 130px;
+      padding: 0 10px;
+      color: #e5e7eb;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 10px;
+    }
+
+    #search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 13px 10px;
+      color: #f9fafb;
+      background: transparent;
+      border: 0;
+      outline: 0;
+    }
+
+    #search-input::placeholder { color: #9ca3af; }
+
+    .search-button {
+      padding: 0 20px;
+      color: white;
+      background: #2563eb;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    .search-button:hover { background: #1d4ed8; }
+
+    .suggestions {
+      position: absolute;
+      z-index: 2;
+      top: calc(100% + 6px);
+      right: 0;
+      left: 0;
+      display: none;
+      overflow: hidden;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 12px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .3);
+    }
+
+    .suggestions.visible { display: block; }
+
+    .suggestion {
+      width: 100%;
+      padding: 11px 16px;
+      color: #e5e7eb;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .suggestion:hover, .suggestion:focus {
+      background: #374151;
+      outline: 0;
+    }
+
+    section { margin-top: 38px; }
+
+    h2 {
+      margin: 0 0 16px;
+      color: #d1d5db;
+      font-size: 1rem;
+      font-weight: 650;
+    }
+
+    .bookmarks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .bookmark {
+      display: flex;
+      align-items: center;
+      min-height: 56px;
+      padding: 14px;
+      color: #e5e7eb;
+      text-decoration: none;
+      background: rgba(31, 41, 55, .8);
+      border: 1px solid #374151;
+      border-radius: 12px;
+      transition: background .15s, transform .15s;
+    }
+
+    .bookmark:hover {
+      background: #273449;
+      transform: translateY(-2px);
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .archive-card {
+      padding: 16px;
+      background: rgba(31, 41, 55, .8);
+      border: 1px solid #374151;
+      border-radius: 12px;
+    }
+
+    .archive-card label {
+      display: block;
+      margin-bottom: 10px;
+      color: #d1d5db;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .archive-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .archive-row input {
+      min-width: 0;
+      flex: 1;
+      padding: 10px;
+      color: #f9fafb;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 8px;
+    }
+
+    .archive-row button {
+      padding: 0 13px;
+      color: white;
+      background: #4b5563;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .archive-row button:hover { background: #6b7280; }
+
+    footer {
+      margin-top: 30px;
+      color: #6b7280;
+      font-size: .8rem;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 32px 16px; }
+      .search-form { flex-wrap: wrap; }
+      select { flex: 1; height: 44px; }
+      .search-button { height: 44px; }
+      #search-input { flex-basis: 100%; order: 2; }
+      .search-button { order: 3; }
+      .archive-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="brand">
+      <img src="https://logoremakefourwtl.github.io/lrfeditor/logo.png" alt="LogoRemakeFour logo">
+      <div>
+        <h1>LogoRemakeFour</h1>
+        <p class="subtitle">Your web, one search away.</p>
+      </div>
+    </header>
+
+    <div class="search-wrap">
+      <form class="search-form" id="search-form" autocomplete="off">
+        <select id="engine" aria-label="Search engine">
+          <option value="google">Google</option>
+          <option value="bing">Bing</option>
+          <option value="yandex">Yandex</option>
+          <option value="brave">Brave Search</option>
+          <option value="startpage">Startpage</option>
+        </select>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search on Google, Bing, Yandex, Brave Search and Startpage or enter URL"
+          aria-label="Search or enter URL"
+          aria-controls="suggestions"
+          aria-expanded="false"
+        >
+        <button class="search-button" type="submit">Search</button>
+      </form>
+      <div class="suggestions" id="suggestions" role="listbox" aria-label="Search suggestions"></div>
+    </div>
+
+    <section aria-labelledby="bookmarks-title">
+      <h2 id="bookmarks-title">Bookmarks</h2>
+      <nav class="bookmarks" aria-label="Bookmarks">
+        <a class="bookmark" href="https://www.google.com">Google</a>
+        <a class="bookmark" href="https://www.bing.com">Bing</a>
+        <a class="bookmark" href="https://www.yandex.com">Yandex</a>
+        <a class="bookmark" href="https://search.brave.com">Brave Search</a>
+        <a class="bookmark" href="https://www.startpage.com">Startpage</a>
+        <a class="bookmark" href="https://www.github.com">GitHub</a>
+        <a class="bookmark" href="https://www.github.com/copilot">GitHub Copilot</a>
+        <a class="bookmark" href="https://www.youtube.com">YouTube</a>
+        <a class="bookmark" href="https://logoremakefourlrf.github.io">LogoRemakeFour</a>
+      </nav>
+    </section>
+
+    <section aria-labelledby="archive-title">
+      <h2 id="archive-title">Web Archive</h2>
+      <div class="archive-grid">
+        <form class="archive-card" id="archive-form">
+          <label for="archive-url">Search archived snapshots</label>
+          <div class="archive-row">
+            <input id="archive-url" type="text" placeholder="example.com" required>
+            <button type="submit">Search</button>
+          </div>
+        </form>
+
+        <form class="archive-card" id="screenshot-form">
+          <label for="screenshot-url">View archived screenshot</label>
+          <div class="archive-row">
+            <input id="screenshot-url" type="text" placeholder="example.com" required>
+            <button type="submit">View</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer>Search powered by your selected provider · Suggestions by Google</footer>
+  </main>
+
+  <script>
+    const searchForm = document.querySelector("#search-form");
+    const searchInput = document.querySelector("#search-input");
+    const engineSelect = document.querySelector("#engine");
+    const suggestionsBox = document.querySelector("#suggestions");
+    let suggestionTimer;
+    let activeController;
+
+    const searchUrls = {
+      google: "https://www.google.com/search?q=",
+      bing: "https://www.bing.com/search?q=",
+      yandex: "https://yandex.com/search/?text=",
+      brave: "https://search.brave.com/search?q=",
+      startpage: "https://www.startpage.com/sp/search?query="
+    };
+
+    function closeSuggestions() {
+      suggestionsBox.replaceChildren();
+      suggestionsBox.classList.remove("visible");
+      searchInput.setAttribute("aria-expanded", "false");
+    }
+
+    function looksLikeUrl(value) {
+      if (/\s/.test(value)) return false;
+      return /^(https?:\/\/|localhost(?::\d+)?(?:\/|$)|(?:[\w-]+\.)+[a-z]{2,}(?::\d+)?(?:\/|$))/i.test(value);
+    }
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = searchInput.value.trim();
+      if (!value) return;
+
+      closeSuggestions();
+
+      if (looksLikeUrl(value)) {
+        const destination = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+        window.location.href = destination;
+        return;
+      }
+
+      window.location.href = searchUrls[engineSelect.value] + encodeURIComponent(value);
+    });
+
+    searchInput.addEventListener("input", () => {
+      clearTimeout(suggestionTimer);
+      if (activeController) activeController.abort();
+
+      const query = searchInput.value.trim();
+      if (query.length < 2 || looksLikeUrl(query)) {
+        closeSuggestions();
+        return;
+      }
+
+      suggestionTimer = setTimeout(async () => {
+        activeController = new AbortController();
+        const endpoint =
+          "https://suggestqueries.google.com/api/complete/search?q=" +
+          encodeURIComponent(query) +
+          "&client=lrfwebsite";
+
+        try {
+          const response = await fetch(endpoint, { signal: activeController.signal });
+          if (!response.ok) throw new Error("Suggestions unavailable");
+          const data = await response.json();
+          const items = Array.isArray(data?.[1]) ? data[1] : [];
+
+          suggestionsBox.replaceChildren();
+          items.slice(0, 6).forEach((item) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "suggestion";
+            button.setAttribute("role", "option");
+            button.textContent = item;
+            button.addEventListener("click", () => {
+              searchInput.value = item;
+              closeSuggestions();
+              searchForm.requestSubmit();
+            });
+            suggestionsBox.append(button);
+          });
+
+          const hasSuggestions = suggestionsBox.childElementCount > 0;
+          suggestionsBox.classList.toggle("visible", hasSuggestions);
+          searchInput.setAttribute("aria-expanded", String(hasSuggestions));
+        } catch (error) {
+          if (error.name !== "AbortError") closeSuggestions();
+        }
+      }, 180);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".search-wrap")) closeSuggestions();
+    });
+
+    function normalizeWebsite(value) {
+      const trimmed = value.trim();
+      if (!trimmed) return null;
+      return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    }
+
+    document.querySelector("#archive-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const website = normalizeWebsite(document.querySelector("#archive-url").value);
+      if (!website) return;
+      window.location.href =
+        "https://web.archive.org/web/*/" + encodeURIComponent(website);
+    });
+
+    document.querySelector("#screenshot-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const website = normalizeWebsite(document.querySelector("#screenshot-url").value);
+      if (!website) return;
+      window.location.href =
+        "https://web.archive.org/web/screenshot/" + website.replace(/^https?:\/\//i, "");
+    });
+  </script>
+</body>
+</html>
